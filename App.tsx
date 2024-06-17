@@ -1,117 +1,71 @@
-/**
- * Sample React Native App
- * https://github.com/facebook/react-native
- *
- * @format
- */
-
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { Image, Pressable, StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
+import { AppColors } from './src/core/colors';
+import { AppRoutes } from './src/core/routes';
+import PackagesList from './src/screens/packages_list';
+import { ScannerPage } from './src/screens/scanner';
 
-import {
-  Colors,
-  DebugInstructions,
-  Header,
-  LearnMoreLinks,
-  ReloadInstructions,
-} from 'react-native/Libraries/NewAppScreen';
 
-type SectionProps = PropsWithChildren<{
-  title: string;
-}>;
+const Stack = createNativeStackNavigator();
 
-function Section({children, title}: SectionProps): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
+function App() {
   return (
-    <View style={styles.sectionContainer}>
-      <Text
-        style={[
-          styles.sectionTitle,
-          {
-            color: isDarkMode ? Colors.white : Colors.black,
-          },
-        ]}>
-        {title}
-      </Text>
-      <Text
-        style={[
-          styles.sectionDescription,
-          {
-            color: isDarkMode ? Colors.light : Colors.dark,
-          },
-        ]}>
-        {children}
-      </Text>
-    </View>
-  );
+    <NavigationContainer>
+      <Stack.Navigator initialRouteName={AppRoutes.PackagesListPage}>
+        <Stack.Screen
+          name={AppRoutes.PackagesListPage}
+          component={PackagesList}
+          options={({ navigation, route }) => ({
+            title: "Packages List",
+            headerTintColor: AppColors.blue,
+            headerRight: (_) => (addPackageIcon(navigation)),
+          })}
+
+        />
+        <Stack.Screen
+          name={AppRoutes.ScannerPage}
+          component={ScannerPage}
+          options={({ navigation, route }) => ({
+            title: "Scanner Page",
+            headerTintColor: AppColors.blue,
+            headerBackTitleVisible: false,
+          })}
+        />
+      </Stack.Navigator>
+      <Toast />
+    </NavigationContainer>
+  )
 }
 
-function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
 
-  const backgroundStyle = {
-    backgroundColor: isDarkMode ? Colors.darker : Colors.lighter,
-  };
-
+function addPackageIcon(navigation: any) {
   return (
-    <SafeAreaView style={backgroundStyle}>
-      <StatusBar
-        barStyle={isDarkMode ? 'light-content' : 'dark-content'}
-        backgroundColor={backgroundStyle.backgroundColor}
+    <Pressable onPress={() => {
+      navigation.navigate(AppRoutes.ScannerPage);
+
+    }}>
+      <Image
+        style={styles.actionIcon}
+        source={
+          require("./assets/images/empty_box.png")
+        }
       />
-      <ScrollView
-        contentInsetAdjustmentBehavior="automatic"
-        style={backgroundStyle}>
-        <Header />
-        <View
-          style={{
-            backgroundColor: isDarkMode ? Colors.black : Colors.white,
-          }}>
-          <Section title="Step One">
-            Edit <Text style={styles.highlight}>App.tsx</Text> to change this
-            screen and then come back to see your edits.
-          </Section>
-          <Section title="See Your Changes">
-            <ReloadInstructions />
-          </Section>
-          <Section title="Debug">
-            <DebugInstructions />
-          </Section>
-          <Section title="Learn More">
-            Read the docs to discover what to do next:
-          </Section>
-          <LearnMoreLinks />
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+    </Pressable>
   );
 }
+
+
+
 
 const styles = StyleSheet.create({
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-  },
-  highlight: {
-    fontWeight: '700',
+  actionIcon: {
+    width: 40,
+    height: 40,
+    alignContent: 'center',
+    resizeMode: 'cover',
   },
 });
 

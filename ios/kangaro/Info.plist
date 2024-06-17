@@ -48,5 +48,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+    <string>Please Grant the Camera Access to enable Scanning the QR Code</string>
 </dict>
 </plist>
