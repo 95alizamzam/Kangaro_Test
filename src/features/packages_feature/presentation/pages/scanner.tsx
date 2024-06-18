@@ -122,7 +122,7 @@ export class ScannerPage extends Component<any, State> {
             let result = await usecase.call({ item: item });
             if (result === true) {
                 this.setState({ showCheckMark: true });
-                await AppUtils.sleep(3000);
+                await AppUtils.sleep(2000);
                 this.setState({ showModal: false });
                 this.props.navigation.goBack();
             } else {
