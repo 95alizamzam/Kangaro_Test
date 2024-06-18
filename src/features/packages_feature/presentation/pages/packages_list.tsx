@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { FlatList, RefreshControl, StyleSheet, View } from 'react-native';
+import { FlatList, RefreshControl, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AppColors } from '../../../../core/app/colors';
+import { AppRoutes } from '../../../../core/app/routes';
 import CircularIndicator from '../../../../core/components/circular_indicator';
 import ErrorViewCard from '../../../../core/components/error_view_card';
 import { PackageLocalDataSource } from '../../data/local_data_source/package_local_data_source';
@@ -9,8 +10,6 @@ import { FetchAllPackagesUseCase } from '../../domain/usecases/fetch_all_package
 import EmptyPackagesList from '../components/empty_packages_list';
 import PackageItem from '../components/package_item';
 
-
-
 type State = {
     isLoading: boolean,
     packagesList: Array<PackageModel>,
@@ -18,7 +17,9 @@ type State = {
     isRfreshing: boolean,
 }
 
-export class PackagesList extends Component<any, State> {
+type Probs = { navigation: any }
+
+export class PackagesList extends Component<Probs, State> {
     unsubscribe: any;
 
     constructor(probs: any) {
@@ -30,7 +31,6 @@ export class PackagesList extends Component<any, State> {
             isRfreshing: false,
         }
     }
-
 
     render() {
         return (
@@ -47,6 +47,7 @@ export class PackagesList extends Component<any, State> {
                                 this.state.packagesList.length === 0 ? (
                                     <EmptyPackagesList navigation={this.props.navigation} />
                                 ) : (
+
                                     <View style={{ flex: 1, paddingVertical: 10 }}>
                                         <FlatList
                                             refreshControl={
@@ -72,7 +73,18 @@ export class PackagesList extends Component<any, State> {
                                             }}
                                             keyExtractor={item => item.id.toString()}
                                         ></FlatList>
+
+                                        <View style={styles.buttonContainer}>
+                                            <TouchableOpacity
+                                                style={styles.button}
+                                                onPress={() => {
+                                                    this.props.navigation.navigate(AppRoutes.ScannerPage);
+                                                }}>
+                                                <Text style={styles.buttonText}>Scan Packages</Text>
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
+
                                 )
                             )
                 }
@@ -124,6 +136,25 @@ const styles = StyleSheet.create({
         flexDirection: 'column',
         backgroundColor: AppColors.white,
     },
+
+    buttonContainer: {
+        padding: 10,
+        backgroundColor: '#F8F8F8',
+        width: '100%',
+    },
+    button: {
+        height: 50,
+        alignItems: 'center',
+        justifyContent: 'center',
+        marginHorizontal: 50,
+        borderRadius: 25,
+        backgroundColor: AppColors.blue,
+    },
+    buttonText: {
+        fontSize: 14,
+        fontWeight: '700',
+        color: AppColors.white,
+    }
 });
 
 export default PackagesList;

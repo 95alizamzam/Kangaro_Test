@@ -9,14 +9,24 @@ export class AddPackageUseCase {
         this.localDataSource = new PackageLocalDataSource();
     }
 
-    async call(probs: { item: PackageModel }): Promise<void> {
+    async call(probs: { item: PackageModel }): Promise<boolean> {
+        let result: boolean = false;
         const response = await this.localDataSource.addPackage(probs.item);
-        if (response.exception != null) {
+        if (response.data != null) {
+            showToast({
+                title: "Adding New Package",
+                message: `Your Package ${probs.item.packageName} was added successfully`,
+            });
+            result = true;
+        } else if (response.exception != null) {
             showToast({
                 title: "Adding New Package",
                 message: `${response.exception.message}`,
                 type: 'error',
             });
+            result = false;
         }
+
+        return result;
     }
 }

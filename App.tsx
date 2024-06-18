@@ -1,78 +1,55 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { Image, Pressable, StyleSheet } from 'react-native';
 import Toast from 'react-native-toast-message';
 import { AppColors } from './src/core/app/colors';
 import { AppAssets } from './src/core/app/images';
 import { AppRoutes } from './src/core/app/routes';
-import CircularIndicator from './src/core/components/circular_indicator';
-import { LocalStorageService } from './src/core/services/local_storage_service';
-import PackagesList from './src/features/packages/presentation/pages/packages_list';
-import { ScannerPage } from './src/features/packages/presentation/pages/scanner';
+import SplashScreen from './src/core/app/splash_screen';
+import PackagesList from './src/features/packages_feature/presentation/pages/packages_list';
+import { ScannerPage } from './src/features/packages_feature/presentation/pages/scanner';
 
 
 const Stack = createNativeStackNavigator();
 
 function App() {
-  const [isOpened, markAsOpened] = useState(false);
-
-  // Open Local DataBase once app starts 
-  useEffect(() => {
-    const openDatabase = async () => {
-      let service = LocalStorageService.getInstance();
-      return await service.openDataBase({ dbName: "KangaroDB.db" });
-    };
-    openDatabase().then((response) => {
-      markAsOpened(response);
-    });
-  }, []);
-
   return (
-    isOpened == false ? <CircularIndicator />
-      :
-      < NavigationContainer >
-        <Stack.Navigator initialRouteName={AppRoutes.PackagesListPage}>
-          <Stack.Screen
-            name={AppRoutes.PackagesListPage}
-            component={PackagesList}
-            options={({ navigation, route }) => ({
-              headerTitleAlign: 'center',
-              title: AppRoutes.PackagesListPage,
-              headerTintColor: AppColors.blue,
-              headerRight: (_) => (addPackageIcon(navigation)),
-            })}
-          />
-          <Stack.Screen
-            name={AppRoutes.ScannerPage}
-            component={ScannerPage}
-            options={({ navigation, route }) => ({
-              headerTitleAlign: 'center',
-              title: AppRoutes.ScannerPage,
-              headerTintColor: AppColors.blue,
-              headerBackTitleVisible: false,
-              headerLeft: (_) => (goBackIcon(navigation)),
-            })}
-          />
-        </Stack.Navigator>
-        <Toast />
-      </ NavigationContainer>
-
+    < NavigationContainer >
+      <Stack.Navigator initialRouteName={AppRoutes.SplashPage}>
+        <Stack.Screen
+          name={AppRoutes.SplashPage}
+          component={SplashScreen}
+          options={({ navigation, route }) => ({
+            headerShown: false,
+          })}
+        />
+        <Stack.Screen
+          name={AppRoutes.PackagesListPage}
+          component={PackagesList}
+          options={({ navigation, route }) => ({
+            headerTitleAlign: 'center',
+            title: AppRoutes.PackagesListPage,
+            headerTintColor: AppColors.blue,
+          })}
+        />
+        <Stack.Screen
+          name={AppRoutes.ScannerPage}
+          component={ScannerPage}
+          options={({ navigation, route }) => ({
+            headerTitleAlign: 'center',
+            title: AppRoutes.ScannerPage,
+            headerTintColor: AppColors.blue,
+            headerBackTitleVisible: false,
+            headerLeft: (_) => (goBackIcon(navigation)),
+          })}
+        />
+      </Stack.Navigator>
+      <Toast />
+    </ NavigationContainer>
   )
 }
 
-function addPackageIcon(navigation: any) {
-  return (
-    <Pressable onPress={() => {
-      navigation.navigate(AppRoutes.ScannerPage);
-    }}>
-      <Image
-        style={styles.actionIcon}
-        source={AppAssets.openBoxImage}
-      />
-    </Pressable>
-  );
-}
 
 function goBackIcon(navigation: any) {
   return (

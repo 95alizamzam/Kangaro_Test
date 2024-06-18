@@ -1,5 +1,6 @@
 
 export class AppRoutes {
-    static PackagesListPage = 'Packages Page';
-    static ScannerPage = 'Scanner Page';
+    static SplashPage = 'Splash';
+    static PackagesListPage = 'Packages';
+    static ScannerPage = 'Scanner';
 }

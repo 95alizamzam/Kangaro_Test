@@ -5,6 +5,7 @@ import QRCodeScanner from "react-native-qrcode-scanner";
 import CameraPermissionDeniedCard from "../../../../core/components/camera_permission_denied_card";
 import CircularIndicator from "../../../../core/components/circular_indicator";
 import { PermissionsServices } from "../../../../core/services/permissions_services";
+import { AppUtils } from "../../../../core/utils/utils";
 import { PackageModel } from "../../data/models/package_model";
 import { AddPackageUseCase } from "../../domain/usecases/add_package_usecase";
 import AddNewPackageModal from "../components/modal";
@@ -16,6 +17,7 @@ type State = {
     showModal: boolean,
     textValue: string,
     hasCameraPermissons: boolean | null,
+    showCheckMark: boolean,
 }
 
 
@@ -28,6 +30,7 @@ export class ScannerPage extends Component<any, State> {
             showModal: false,
             textValue: "",
             hasCameraPermissons: null,
+            showCheckMark: false,
         }
     }
 
@@ -71,7 +74,6 @@ export class ScannerPage extends Component<any, State> {
                                         />
                                     </View>
 
-
                                     <View>
                                         <Modal
                                             animationType="fade"
@@ -80,6 +82,7 @@ export class ScannerPage extends Component<any, State> {
                                         >
                                             <AddNewPackageModal
                                                 packageCode={`${this.state.packageCode}`}
+                                                showCheckMark={this.state.showCheckMark}
                                                 confirm={async (packageName) => {
                                                     await this.AddNewPackage({ name: packageName });
                                                 }}
@@ -116,11 +119,21 @@ export class ScannerPage extends Component<any, State> {
                 packageName: probs.name,
                 code: this.state.packageCode,
             });
-            await usecase.call({ item: item });
-            this.setState({ showModal: false });
+            let result = await usecase.call({ item: item });
+            if (result === true) {
+                this.setState({ showCheckMark: true });
+                await AppUtils.sleep(3000);
+                this.setState({ showModal: false });
+                this.props.navigation.goBack();
+            } else {
+                this.setState({ showModal: false });
+            }
+
         }
     }
 }
+
+
 
 
 
