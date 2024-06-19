@@ -39,47 +39,48 @@ export class LocalStorageService {
         }
     }
 
-    async createTable(probs: { sql: string }): Promise<ResultSet> {
-        return new Promise<ResultSet>((resolve, reject) => {
-            this.sqlLite.transaction((tx) => {
+    async createTable(probs: { sql: string }): Promise<void> {
+        try {
+            await this.sqlLite.transaction((tx) => {
                 tx.executeSql(
                     probs.sql,
                     [],
-                    (_, res) => { resolve(res); },
-                    (_, __) => { reject(new Error()) }
+                    (_, __) => { },
+                    (_, __) => { throw new Error() }
                 );
             });
-        });
 
+        } catch (error) { throw error }
     }
 
 
     async findAll(probs: { sql: string }): Promise<ResultSet> {
-        const promise = new Promise<ResultSet>((resolve, reject) => {
-            this.sqlLite.transaction((tx) => {
+        try {
+            let result!: ResultSet;
+            await this.sqlLite.transaction((tx) => {
                 tx.executeSql(
                     probs.sql,
                     [],
-                    (_, res) => { resolve(res) },
-                    (_, __) => { reject(new Error()) }
+                    (_, res) => { result = res },
+                    (_, __) => { throw new Error() }
                 );
             });
-        });
-
-        return promise.then((res) => (res)).catch((err) => { throw err });
+            return result;
+        } catch (error) { throw error }
     }
 
     async execute(probs: { sql: string }): Promise<ResultSet> {
-        const promise = new Promise<ResultSet>((resolve, reject) => {
-            this.sqlLite.transaction((tx) => {
+        try {
+            let result!: ResultSet;
+            await this.sqlLite.transaction((tx) => {
                 tx.executeSql(
                     probs.sql,
                     [],
-                    (_, res) => { resolve(res) },
-                    (_, __) => { reject(new Error()) },
+                    (_, res) => { result = res; },
+                    (_, __) => { throw new Error() },
                 );
             });
-        });
-        return promise.then((res) => (res)).catch((err) => { throw err });
+            return result;
+        } catch (error) { throw error }
     }
 }

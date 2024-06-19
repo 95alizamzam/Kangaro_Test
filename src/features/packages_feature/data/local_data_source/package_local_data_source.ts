@@ -25,8 +25,6 @@ export class PackageLocalDataSource {
             let sql = `CREATE TABLE IF NOT EXISTS ${this.tableName}` +
                 `(ID INTEGER PRIMARY KEY AUTOINCREMENT,PackageName TEXT,BarCode TEXT UNIQUE)`;
             await this.localStorage.createTable({ sql: sql });
-            console.log(`${this.tableName} created successfully`);
-
         } catch (error) {
             showToast({
                 title: "Creating Table",
