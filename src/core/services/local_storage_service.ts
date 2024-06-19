@@ -55,7 +55,7 @@ export class LocalStorageService {
 
 
     async findAll(probs: { sql: string }): Promise<ResultSet> {
-        return new Promise<ResultSet>((resolve, reject) => {
+        const promise = new Promise<ResultSet>((resolve, reject) => {
             this.sqlLite.transaction((tx) => {
                 tx.executeSql(
                     probs.sql,
@@ -66,10 +66,11 @@ export class LocalStorageService {
             });
         });
 
+        return promise.then((res) => (res)).catch((err) => { throw err });
     }
 
     async execute(probs: { sql: string }): Promise<ResultSet> {
-        return new Promise<ResultSet>((resolve, reject) => {
+        const promise = new Promise<ResultSet>((resolve, reject) => {
             this.sqlLite.transaction((tx) => {
                 tx.executeSql(
                     probs.sql,
@@ -79,5 +80,6 @@ export class LocalStorageService {
                 );
             });
         });
+        return promise.then((res) => (res)).catch((err) => { throw err });
     }
 }
